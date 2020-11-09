@@ -76,7 +76,6 @@ def make_params(num_bird, bird, row, food):
 
     A_eq = [[1 for i in range(food.index.stop)]]
     b_eq = [[10]]
-    #print(A_ub, '\n', b_ub)
     return c, A_ub, b_ub, A_eq, b_eq
 
 
@@ -88,7 +87,6 @@ def work(c, A_ub, b_ub, A_eq, b_eq):
 c, A_ub, b_ub, A_eq, b_eq = make_params(num_bird, bird, row, food)
 result_all, result_x = work(c, A_ub, b_ub, A_eq, b_eq)
 result_x = pd.Series(result_x)
-#print(result_all)
 result_food = []
 for i in row:
     result_food.append((result_x * food[i]).sum())
