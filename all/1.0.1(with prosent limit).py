@@ -75,51 +75,46 @@ def make_params(num_bird, bird, row, food):
     for i in range(food.index.stop):
         b_ub.append(0)
 
-    #A_eq = [[100 for i in range(food.index.stop)]]
-    #b_eq = [[1000]]
+    A_eq = [[100 for i in range(food.index.stop)]]
+    b_eq = [[1000]]
     #print(A_ub, '\n', b_ub)
-    return c, A_ub, b_ub
+    return c, A_ub, b_ub, A_eq, b_eq
 
 
-def work(c, A_ub, b_ub):
+def work(c, A_ub, b_ub, A_eq, b_eq):
     start = time.time()
-    x = linprog(c, A_ub, b_ub, options={"presolve": False})
+    x = linprog(c, A_ub, b_ub, A_eq, b_eq, options={"presolve": False})
     stop = time.time()
     # print("Время : {}".format(stop - start))
     # print(x)
     return x, x.x
 
 
-c, A_ub, b_ub = make_params(num_bird, bird, row, food)
-result_all, result_x = work(c, A_ub, b_ub)
+c, A_ub, b_ub, A_eq, b_eq = make_params(num_bird, bird, row, food)
+result_all, result_x = work(c, A_ub, b_ub, A_eq, b_eq)
 result_x = pd.Series(result_x)
-#print(result_all)
+print(result_all)
 result_food = []
-#print(result_x)
+print(result_x)
 for i in row:
     result_food.append((result_x * food[i]).sum())
-#print(result_food)
+print(result_food)
 result_x.to_excel('result.xlsx', sheet_name='Корм')
 
 
-x_food = pd.Series(result_x)
-x_food = x_food[x_food > 0.001]
+#x_food = pd.Series(result_x)
+#x_food = x_food[x_food > 0.001]
 #print(len(x_food))
-food1 = food.copy()
-food1 = food1.loc[x_food.index]
-food1 = food1.reset_index(drop=True)
-print(food1)
+#food1 = food.copy()
+#food1 = food1.loc[x_food.index]
+#food1 = food1.reindex(range(len(food1)), method='bfill')
+#food1.to_excel('result.xlsx', sheet_name='123')
 
-food1.to_excel('result.xlsx', sheet_name='123')
 
-row1 = food.columns.tolist()
-row1 = row1[2:-2]
-c, A_ub, b_ub = make_params(num_bird, bird, row1, food1)
+#row1 = food.columns.tolist()
+#row1 = row1[2:-2]
+#c, A_ub, b_ub, A_eq, b_eq = make_params(num_bird, bird, row1, food1)
 
-result_all, result_x = work(c, A_ub, b_ub)
-result_x = pd.Series(result_x)
-result_food = []
-for i in row:
-    result_food.append((result_x * food1[i]).sum())
-print(result_food)
-print(result_all)
+#result_all, result_x = work(c, A_ub, b_ub, A_eq, b_eq)
+#result_x = pd.Series(result_x)
+#print(result_all)
